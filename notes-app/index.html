@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="container">
+        <h1><img src="images/notes.png"> Notes</h1>
+        <button class="btn"><img src="images/edit.png" alt="">Create Notes</button>
+        <div class="notes-container">
+            <!-- <p contenteditable="true" class="input-box">
+                <img src="images/delete.png" alt="">
+            </p> -->
+        </div>
+        <!-- Clear Button -->
+        <button class="clear-btn">
+            Clear All
+        </button>
+        
+        <div class="notes-container">
+        
+            <!-- Notes will appear here -->
+        
+        </div>
+    </div>
+
+    <script>
+
+
+    const notesContainer = document.querySelector(".notes-container");
+    const createBtn = document.querySelector(".btn");
+    const clearBtn = document.querySelector(".clear-btn");
+    let notes = document.querySelectorAll(".input-box");
+
+    // Show Note for When it refresh
+    function showNotes(){
+        notesContainer.innerHTML = localStorage.getItem("notes");
+    }
+    showNotes();
+
+    // localhost store the data
+    function updateStorage() {
+        localStorage.setItem("notes", notesContainer.innerHTML);
+    }
+
+    // Create notes when click button
+    createBtn.addEventListener("click", ()=> {
+        let inputBox = document.createElement("p");
+        let img = document.createElement("img");
+        inputBox.className = "input-box";
+        inputBox.setAttribute("contenteditable", "true");
+        img.src = "images/delete.png";
+        notesContainer.appendChild(inputBox).appendChild(img);
+    });
+
+    // remove notes when click delete button
+    notesContainer.addEventListener("click", function(e){
+        if(e.target.tagName === "IMG") {
+            e.target.parentElement.remove();
+            updateStorage();
+        } else if (e.target.tagName === "P") {
+            notes = document.querySelectorAll(".input-box");
+            notes.forEach(nt => {
+                nt.onkeyup = function(){
+                    updateStorage();
+                }
+            })
+        }
+    });
+
+
+    // Use enter for after line not break
+    document.addEventListener("keydown", event =>{
+        if(event.key === "Enter"){
+            document.execCommand("insertLineBreak");
+            event.preventDefault();
+        }
+    });
+
+    // Clear all notes
+        function clearNotes() {
+            localStorage.removeItem("notes");
+            notesContainer.innerHTML = "";
+        }
+
+        // Clear button click
+        clearBtn.addEventListener("click", () => {
+            clearNotes();
+        });
+
+    </script>
+
+</body>
+</html>
